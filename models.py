@@ -122,7 +122,7 @@ class Question(Base):
     question_id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(511), nullable=False)
     difficulty = db.Column(db.Enum(Difficulty))
-    marks = db.Column(db.Integer(3), nullable=False)
+    marks = db.Column(db.Integer, nullable=False)
     answer = db.Column(db.String(255), nullable=False)
     solution = db.Column(db.String(2047), nullable=False)
     problem_id = db.Column(db.ForeignKey('problem.problem_id'), nullable=False, index=True)
@@ -141,9 +141,10 @@ class HasTakenTest(Base):
     
     __tablename__ = 'has_taken_test'
 
+    has_taken_test_id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.ForeignKey('auth_user.auth_user_id'), nullable=False, index=True)
     test_id = db.Column(db.ForeignKey('test.test_id'), nullable=False, index=True)
-    score = db.Column(db.Integer(3), nullable=False, index=True)
+    score = db.Column(db.Integer, nullable=False, index=True)
 
     auth_user = relationship('AuthUser')
     test = relationship('Test')
