@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>AstroTrain - Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+  </head>
+  <body>
+    <h1> User Registration </h1>
+    <form method="POST">
+      {% if error != '' %}
+        <span> An error has occured. Please try again later </span>
+      {% endif %}
+      <div class="form-group">
+        <input id="token" name="reg_token" type="hidden" value="{{ reg_token }}">
+        <div class="input-container">
+          <label for="first-name-input">First Name:</label>
+          <input id="first-name-input" name="first-name" type="text" required/>
+        </div>
+        <div class="input-container">
+          <label for="last-name-input">Last Name:</label>
+          <input id="last-name-input" name="last-name" type="text" required/>
+        </div>
+      </div>
+      <div>
+        <input type="submit" value="Register" name="Register">
+      </div>
+    </form>
+  </body>
+</html>
