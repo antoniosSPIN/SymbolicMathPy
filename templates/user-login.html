@@ -2,26 +2,16 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>AstroTrain - Registration</title>
+    <title>AstroTrain - Login</title>
     <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
   </head>
   <body>
-    <h1> User Registration </h1>
+    <h1> User Login </h1>
     <form method="POST">
       {% if error != '' %}
         <span> {{ error }} </span>
       {% endif %}
-      <input id="token" name="reg_token" type="hidden" value="{{ reg_token }}">
-      <div class="form-group">
-        <div class="input-container">
-          <label for="first-name-input">First Name:</label>
-          <input id="first-name-input" name="first_name" type="text" required/>
-        </div>
-        <div class="input-container">
-          <label for="last-name-input">Last Name:</label>
-          <input id="last-name-input" name="last_name" type="text" required/>
-        </div>
-      </div>
+      <input id="token" name="login_token" type="hidden" value="{{ login_token }}">
       <div class="form-group">
         <div class="input-container">
           <label for="email-input">Email:</label>
