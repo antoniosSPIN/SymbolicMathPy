@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>AstroTrain - Test Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+  </head>
+  <body>
+    <h1>List of Tests</h1>
+    <div class="test-container">
+      <div class="test-list-header">
+        <span>Name</span>
+        <span>Total number of problems</span>
+        <span>Total Marks</span>
+        <span>Difficulty</span>
+      </div>
+    {% for test in tests %}
+      <div class="entry-container">
+        <span>{{ test.name }}</span>
+        <span>{{ test.problem_count }}</span>
+        <span>{{ test.total_marks }}</span>
+        <span>{{ test.difficulty }}</span>
+      </div>
+    {% endfor %}
+    </div>
+  </body>
+</html>
