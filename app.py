@@ -7,3 +7,5 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 # import routes
 import routes
+# import error handling
+import errors
