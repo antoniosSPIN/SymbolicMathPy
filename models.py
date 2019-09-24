@@ -92,7 +92,7 @@ class Problem(Base):
 
     problem_id = db.Column(db.Integer, primary_key=True)
     problem_statement = db.Column(db.String(511), nullable=False)
-    test_id = db.Column(db.ForeignKey('test.test_id'), nullable=False, index=True)
+    test_id = db.Column(db.ForeignKey('test.test_id'), nullable=False, primary_key=True)
 
     test = relationship('Test')
 
@@ -109,13 +109,14 @@ class Question(Base):
     """A class representing a question of a problem
     """
 
-    def __init__(self, question, difficulty, marks, answer, solution, problem_id):
+    def __init__(self, question, difficulty, marks, answer, solution, problem_id, test_id):
         self.question = question
         self.difficulty = difficulty
         self.marks = marks
         self.answer = answer
         self.solution = solution
         self.problem_id = problem_id
+        self.test_id = test_id
     
     __tablename__ = 'question'
 
@@ -125,9 +126,11 @@ class Question(Base):
     marks = db.Column(db.Integer, nullable=False)
     answer = db.Column(db.String(255), nullable=False)
     solution = db.Column(db.String(2047), nullable=False)
-    problem_id = db.Column(db.ForeignKey('problem.problem_id'), nullable=False, index=True)
-
+    problem_id = db.Column(db.Integer, primary_key=True)
+    test_id = db.Column(db.Integer, primary_key=True)
+    
     problem = relationship('Problem')
+    __table_args__ = (db.ForeignKeyConstraint([problem_id, test_id], [Problem.problem_id, Problem.test_id]), {})
 
 
 class HasTakenTest(Base):
@@ -156,9 +159,10 @@ class TestHistory(Base):
     """A class representing the test history of a student
     """
 
-    def __init__(self, test_taken_id, question_id, answer, is_correct, is_answered):
-        self.test_taken_id = test_taken_id
+    def __init__(self, test_taken_id, question_id, problem_id, test_id, answer, is_correct, is_answered):
         self.question_id = question_id
+        self.problem_id = problem_id
+        self.test_id = test_id
         self.answer = answer
         self.is_correct = is_correct
         self.is_answered = is_answered
@@ -166,8 +170,15 @@ class TestHistory(Base):
     __tablename__ = 'test_history'
 
     test_history_id = db.Column(db.Integer, primary_key=True)
-    test_taken_id = db.Column(db.ForeignKey('has_taken_test.has_taken_test_id'), nullable=False, index=True)
-    question_id = db.Column(db.ForeignKey('question.question_id'), nullable=False, index=True)
+    problem_id = db.Column(db.Integer, primary_key=True)
+    test_id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.String(255), nullable=False)
     is_correct = db.Column(db.Boolean, nullable=False, default=0)
     is_answered = db.Column(db.Boolean, nullable=False, default=0)
+
+    question = relationship('Question')
+
+    __table_args__ = (db.ForeignKeyConstraint(
+        [problem_id, test_id, question_id],
+        [Question.problem_id, Question.test_id, Question.question_id]), {})
