@@ -15,7 +15,6 @@ class HTTPErrors(enum.Enum):
 @app.errorhandler(401)
 @app.errorhandler(403)
 @app.errorhandler(404)
-@app.errorhandler(405)
 @app.errorhandler(500)
 def handle_error_pages(err):
     status_code = str(err.get_response().status_code)
