@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>AstroTrain - Test Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+  </head>
+  <body>
+    <div class="problem-container">
+      <div class="problem-statement">
+        <h1>Problem {{ problem.test_id }}.{{ problem.problem_id }}</h1>    
+        <p>{{ problem.problem_statement }}</p>
+      </div>
+    {% for question in problem.questions %}
+      <div class="question-container">
+        <p>
+          Question {{ problem.test_id }}.{{ problem.problem_id }}.{{ question.question_id }}. {{ question.question }}
+        </p>
+        <span class="marks">{{ question.marks }} marks</span>
+        <span class="difficulty">{{ question.difficulty }}</span>
+        <form method="POST">
+          <input type="text" name="answer" id="answer-{{ question.question_id }}">
+          <input type="submit" value="Submit Answer">
+        </form>
+      </div>
+      {% if answered %}
+      <div class="solution">
+        <p>{{ question.solution }}</p>
+        <p>Correct Answer: {{ question.answer }}</p>
+      </div>
+      {% endif %}
+    {% endfor %}
+    </div>
+  </body>
+</html>
