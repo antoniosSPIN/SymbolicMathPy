@@ -1,7 +1,7 @@
 from sqlalchemy import func, and_
 
 from models import Test, Problem, Question
-
+import sympy as sp
 
 def get_test_info(test_id):
     test_info = Question.query.\
@@ -48,3 +48,20 @@ def get_problem_and_questions(test_id, problem_id):
     problem = Problem.query.filter_by(problem_id=problem_id, test_id=test_id).first()
     
     return problem, questions
+
+
+def get_question_asnwer(test_id, problem_id, question_id):
+    answer = Question.query.filter_by(problem_id=problem_id, test_id=test_id, question_id=question_id).\
+        with_entities(Question.answer, Question.solution).first()
+    
+    return answer.answer, answer.solution
+
+
+def checkAnswer(answer, submitted_answer):
+    answer = sp.sympify(answer)
+    submitted_answer = sp.sympify(submitted_answer)
+    print(submitted_answer)
+    is_equal = answer.equals(submitted_answer)
+    
+    print(is_equal)
+    return is_equal

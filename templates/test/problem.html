@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>AstroTrain - Test Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+    <script src="{{ url_for('static', filename='js/problem.js') }}"></script>
   </head>
   <body>
     <div class="problem-container">
@@ -18,7 +19,7 @@
         </p>
         <span class="marks">{{ question.marks }} marks</span>
         <span class="difficulty">{{ question.difficulty }}</span>
-        <form method="POST">
+        <form class="form-answer" id="quesiton-{{ question.question_id }}" method="POST">
           <input type="text" name="answer" id="answer-{{ question.question_id }}">
           <input type="submit" value="Submit Answer">
         </form>
