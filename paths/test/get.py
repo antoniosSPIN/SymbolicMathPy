@@ -78,7 +78,8 @@ def get_test_problem(test_id, problem_id):
             "question_id": question.question_id,
             "question": question.question,
             "difficulty": question.difficulty.value,
-            "marks": question.marks
+            "marks": question.marks,
+            "answered": False  # Default value. TODO: Must change
         }
 
-    return render_template("test/problem.html", problem=problem_obj, answered=False)
+    return render_template("test/problem.html", problem=problem_obj)

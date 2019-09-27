@@ -19,7 +19,7 @@
         </p>
         <span class="marks">{{ question.marks }} marks</span>
         <span class="difficulty">{{ question.difficulty }}</span>
-        {% if not answered %}
+        {% if not question.answered %}
         <form class="form-answer" id="question-form-{{ question.question_id }}" method="POST">
           <input type="text" name="answer" id="answer-{{ question.question_id }}">
           <input type="submit" value="Submit Answer">
