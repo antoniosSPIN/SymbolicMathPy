@@ -149,10 +149,10 @@ class TestHistory(Base):
     __tablename__ = 'test_history'
 
     test_history_id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.ForeignKey('auth_user.auth_user_id'), primary_key=True)
-    test_id = db.Column(db.Integer, primary_key=True)
-    problem_id = db.Column(db.Integer, primary_key=True)
-    question_id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.ForeignKey('auth_user.auth_user_id'), nullable=False, index=True)
+    test_id = db.Column(db.Integer, nullable=False, index=True)
+    problem_id = db.Column(db.Integer, nullable=False, index=True)
+    question_id = db.Column(db.Integer, nullable=False, index=True)
     answer = db.Column(db.String(255), nullable=True)
     is_correct = db.Column(db.Boolean, nullable=True)
     is_answered = db.Column(db.Boolean, nullable=False, default=0)
