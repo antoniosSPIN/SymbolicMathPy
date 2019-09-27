@@ -3,6 +3,7 @@ from sqlalchemy import func, and_
 from models import Test, Problem, Question
 import sympy as sp
 
+
 def get_test_info(test_id):
     test_info = Question.query.\
         join(Problem, Problem.problem_id == Question.problem_id and Problem.test_id == Question.test_id).\
