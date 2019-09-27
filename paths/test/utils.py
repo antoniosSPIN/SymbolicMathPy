@@ -60,8 +60,8 @@ def get_question_asnwer(test_id, problem_id, question_id):
 def checkAnswer(answer, submitted_answer):
     answer = sp.sympify(answer)
     submitted_answer = sp.sympify(submitted_answer)
-    print(submitted_answer)
+    # print(submitted_answer)
     is_equal = answer.equals(submitted_answer)
     
-    print(is_equal)
+    # print(is_equal)
     return is_equal

@@ -13,23 +13,24 @@
         <p>{{ problem.problem_statement }}</p>
       </div>
     {% for question in problem.questions %}
-      <div class="question-container">
+      <div class="question-container" id="question-container-{{ question.question_id }}">
         <p>
           Question {{ problem.test_id }}.{{ problem.problem_id }}.{{ question.question_id }}. {{ question.question }}
         </p>
         <span class="marks">{{ question.marks }} marks</span>
         <span class="difficulty">{{ question.difficulty }}</span>
-        <form class="form-answer" id="quesiton-{{ question.question_id }}" method="POST">
+        {% if not answered %}
+        <form class="form-answer" id="question-form-{{ question.question_id }}" method="POST">
           <input type="text" name="answer" id="answer-{{ question.question_id }}">
           <input type="submit" value="Submit Answer">
         </form>
+        {% else %}
+        <div class="solution">
+          <p>{{ question.solution }}</p>
+          <p>Correct Answer: {{ question.answer }}</p>
+        </div>
+        {% endif %}
       </div>
-      {% if answered %}
-      <div class="solution">
-        <p>{{ question.solution }}</p>
-        <p>Correct Answer: {{ question.answer }}</p>
-      </div>
-      {% endif %}
     {% endfor %}
     </div>
   </body>

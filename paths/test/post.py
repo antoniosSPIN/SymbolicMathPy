@@ -12,5 +12,5 @@ def post_answer(test_id, problem_id):
     return {
         'answer': answer,
         'solution': solution,
-        'is_equal': is_equal
+        'isCorrect': is_equal
     }
