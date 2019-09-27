@@ -133,33 +133,12 @@ class Question(Base):
     __table_args__ = (db.ForeignKeyConstraint([problem_id, test_id], [Problem.problem_id, Problem.test_id]), {})
 
 
-class HasTakenTest(Base):
-    """A class representing the relationship between the student and the test they have taken
-    """
-
-    def __init__(self, student_id, test_id, score, finished):
-        self.student_id = student_id
-        self.test_id = test_id
-        self.score = score
-        self.finished = finished
-    
-    __tablename__ = 'has_taken_test'
-
-    has_taken_test_id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.ForeignKey('auth_user.auth_user_id'), nullable=False, index=True)
-    test_id = db.Column(db.ForeignKey('test.test_id'), nullable=False, index=True)
-    score = db.Column(db.Integer, nullable=False, index=True)
-    finished = db.Column(db.Boolean, nullable=False, default=0)
-
-    auth_user = relationship('AuthUser')
-    test = relationship('Test')
-
-
 class TestHistory(Base):
     """A class representing the test history of a student
     """
 
-    def __init__(self, test_taken_id, question_id, problem_id, test_id, answer, is_correct, is_answered):
+    def __init__(self, student_id, test_id, question_id, problem_id, answer, is_correct, is_answered):
+        self.student_id = student_id
         self.question_id = question_id
         self.problem_id = problem_id
         self.test_id = test_id
@@ -170,14 +149,16 @@ class TestHistory(Base):
     __tablename__ = 'test_history'
 
     test_history_id = db.Column(db.Integer, primary_key=True)
-    problem_id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.ForeignKey('auth_user.auth_user_id'), primary_key=True)
     test_id = db.Column(db.Integer, primary_key=True)
+    problem_id = db.Column(db.Integer, primary_key=True)
     question_id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.String(255), nullable=False)
     is_correct = db.Column(db.Boolean, nullable=False, default=0)
     is_answered = db.Column(db.Boolean, nullable=False, default=0)
 
     question = relationship('Question')
+    auth_user = relationship('AuthUser')
 
     __table_args__ = (db.ForeignKeyConstraint(
         [problem_id, test_id, question_id],
