@@ -137,7 +137,7 @@ class TestHistory(Base):
     """A class representing the test history of a student
     """
 
-    def __init__(self, student_id, test_id, question_id, problem_id, answer, is_correct, is_answered):
+    def __init__(self, student_id, test_id, problem_id, question_id, answer, is_correct, is_answered):
         self.student_id = student_id
         self.question_id = question_id
         self.problem_id = problem_id
@@ -153,8 +153,8 @@ class TestHistory(Base):
     test_id = db.Column(db.Integer, primary_key=True)
     problem_id = db.Column(db.Integer, primary_key=True)
     question_id = db.Column(db.Integer, primary_key=True)
-    answer = db.Column(db.String(255), nullable=False)
-    is_correct = db.Column(db.Boolean, nullable=False, default=0)
+    answer = db.Column(db.String(255), nullable=True)
+    is_correct = db.Column(db.Boolean, nullable=True)
     is_answered = db.Column(db.Boolean, nullable=False, default=0)
 
     question = relationship('Question')
