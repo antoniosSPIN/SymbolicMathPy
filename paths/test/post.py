@@ -1,4 +1,4 @@
-from flask import request, abort
+from flask import request, abort, session
 from app import db
 
 from models import TestHistory, Problem, Question

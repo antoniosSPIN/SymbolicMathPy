@@ -1,8 +1,9 @@
-from flask import render_template, request
-from paths.user import user
-from paths.user.utils import createFormGetResponse
-from models import AuthUser, HasUserRole, UserRole
+from flask import render_template, request, session, abort, redirect, url_for
 
+from paths.user import user
+from paths.user.utils import create_form_get_response
+from models import AuthUser, HasUserRole, UserRole
+from errors import HTTPErrors
 from app import db
 
 
@@ -11,7 +12,7 @@ def register_user():
     error = ''
     if request.form['token'] != request.cookies.get('token'):
         error = 'Malformed Request. Please try again!'
-        return createFormGetResponse(template="user/registration.html", error=error)
+        return create_form_get_response(template="user/registration.html", path='/user/registration', error=error)
     new_user = AuthUser(request.form['first_name'], request.form['last_name'], request.form['email'], request.form['password'])
     db.session.add(new_user)
     student_role = UserRole.query.filter_by(name="STUDENT").first()
@@ -29,7 +30,9 @@ def login_user():
     user = AuthUser.query.filter_by(email=request.form['email'], password=request.form['password']).first()
     if error == '' and not user:
         error = 'The email or the password was incorrect'
-    
+
     if error != '':
-        return createFormGetResponse(template="user/login.html", error=error)
-    return render_template('user/registration-successful.html')
+        return create_form_get_response(template="user/login.html", path='/user/login', error=error)
+    
+    session['user_id'] = user.auth_user_id
+    return redirect(url_for('user.get_user_profile'), code=302)
