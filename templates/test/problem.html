@@ -33,9 +33,14 @@
       </div>
     {% endfor %}
     <div class="test-navigation">
-      <a href="">Previous Problem</a>
+      {% if problem.has_prev %}
+      <a href="{{ problem.problem_id - 1 }}">Previous Problem</a>
+      {% endif %}
+      {% if problem.has_next %}
+      <a href="{{ problem.problem_id + 1 }}">Next Problem</a>
+      {% else %}
       <a href="">End</a>
-      <a href="">Next Problem</a>
+      {% endif %}
     </div>
     </div>
   </body>

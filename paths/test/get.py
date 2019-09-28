@@ -1,5 +1,6 @@
 from flask import render_template, abort
 
+from models import Problem
 from paths.test import test
 from paths.test.utils import get_test_info, get_all_test_info, get_problem_and_questions
 from errors import HTTPErrors
@@ -67,11 +68,18 @@ def get_test_problem(test_id, problem_id):
             
     """
     problem, questions = get_problem_and_questions(test_id, problem_id)
+    if not problem or not questions:
+        print("Problem with id {}, {} was not found".format(test_id, problem_id))
+        abort(HTTPErrors.NotFoundError.value)
+    next_problem = Problem.query.filter_by(test_id=test_id, problem_id=(problem_id + 1)).first()
+    prev_problem = Problem.query.filter_by(test_id=test_id, problem_id=(problem_id - 1)).first()
     problem_obj = {
         "problem_id": problem.problem_id,
         "problem_statement": problem.problem_statement,
         "test_id": problem.test_id,
-        "questions": [{}] * len(questions)
+        "questions": [{}] * len(questions),
+        "has_next": not not next_problem,
+        "has_prev": not not prev_problem
     }
     for i, question in enumerate(questions):
         problem_obj['questions'][i] = {
