@@ -6,18 +6,6 @@ from paths.test import test
 from paths.test.utils import get_question_asnwer, checkAnswer
 
 
-@test.route("/<int:test_id>/problem/<int:problem_id>", methods=["POST"])
-def post_answer(test_id, problem_id):
-    submitted_answer = request.form['answer']
-    answer, solution = get_question_asnwer(test_id, problem_id, request.form['question_id'])
-    is_equal = checkAnswer(answer, submitted_answer)
-    return {
-        'answer': answer,
-        'solution': solution,
-        'isCorrect': is_equal
-    }
-
-
 @test.route("/<int:test_id>/start", methods=["POST"])
 def start_test(test_id):
     student_id = 2
@@ -34,3 +22,21 @@ def start_test(test_id):
     db.session.commit()
     start = Problem.query.filter_by(test_id=test_id).order_by(Problem.problem_id).first()
     return {'start': start.problem_id}
+
+
+@test.route("/<int:test_id>/problem/<int:problem_id>", methods=["POST"])
+def post_answer(test_id, problem_id):
+    submitted_answer = request.form['answer']
+    question_id = request.form['question_id']
+    answer, solution = get_question_asnwer(test_id, problem_id, question_id)
+    is_equal = checkAnswer(answer, submitted_answer)
+    TestHistory.query.\
+        filter_by(student_id=2, test_id=test_id, problem_id=problem_id, question_id=question_id).\
+        update({'answer': submitted_answer, 'is_correct': is_equal, 'is_answered': True})
+    db.session.commit()
+    return {
+        'submitted_answer': submitted_answer,
+        'answer': answer,
+        'solution': solution,
+        'isCorrect': is_equal
+    }
