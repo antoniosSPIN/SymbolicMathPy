@@ -1,6 +1,6 @@
 from sqlalchemy import func, and_
 
-from models import Test, Problem, Question
+from models import Test, Problem, Question, TestHistory
 import sympy as sp
 
 
@@ -59,10 +59,20 @@ def get_question_asnwer(test_id, problem_id, question_id):
 
 
 def checkAnswer(answer, submitted_answer):
+    # TODO: Need to sanitize input. Accept power, log and other functions.
     answer = sp.sympify(answer)
     submitted_answer = sp.sympify(submitted_answer)
-    # print(submitted_answer)
     is_equal = answer.equals(submitted_answer)
-    
-    # print(is_equal)
     return is_equal
+
+
+def get_test_history(student_id, test_id):
+    test_history = TestHistory.query.filter_by(student_id=student_id, test_id=test_id).all()
+    return test_history
+
+
+def get_problem_history(student_id, test_id, problem_id):
+    problem_history = TestHistory.query.\
+        filter_by(student_id=student_id, test_id=test_id, problem_id=problem_id).\
+        order_by(TestHistory.question_id).all()
+    return problem_history

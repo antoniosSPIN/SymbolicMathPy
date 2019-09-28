@@ -4,6 +4,7 @@ from app import db
 from models import TestHistory, Problem, Question
 from paths.test import test
 from paths.test.utils import get_question_asnwer, checkAnswer
+from errors import HTTPErrors
 
 
 @test.route("/<int:test_id>/start", methods=["POST"])
@@ -28,15 +29,21 @@ def start_test(test_id):
 def post_answer(test_id, problem_id):
     submitted_answer = request.form['answer']
     question_id = request.form['question_id']
+    student_id = 2
+    question_history = TestHistory.query.\
+        filter_by(student_id=2, test_id=test_id, problem_id=problem_id, question_id=question_id).first()
+    if question_history.is_answered:
+        print('Student {} tried to re-submit answer'.format(student_id))
+        abort(HTTPErrors.BadRequest.value)
     answer, solution = get_question_asnwer(test_id, problem_id, question_id)
     is_equal = checkAnswer(answer, submitted_answer)
     TestHistory.query.\
-        filter_by(student_id=2, test_id=test_id, problem_id=problem_id, question_id=question_id).\
+        filter_by(student_id=student_id, test_id=test_id, problem_id=problem_id, question_id=question_id).\
         update({'answer': submitted_answer, 'is_correct': is_equal, 'is_answered': True})
     db.session.commit()
     return {
         'submitted_answer': submitted_answer,
         'answer': answer,
         'solution': solution,
-        'isCorrect': is_equal
+        'is_correct': is_equal
     }

@@ -19,7 +19,7 @@
         </p>
         <span class="marks">{{ question.marks }} marks</span>
         <span class="difficulty">{{ question.difficulty }}</span>
-        {% if not question.answered %}
+        {% if not question.is_answered %}
         <form class="form-answer" id="question-form-{{ question.question_id }}" method="POST">
           <input type="text" name="answer" id="answer-{{ question.question_id }}">
           <input type="submit" value="Submit Answer">
@@ -27,7 +27,7 @@
         {% else %}
         <div class="solution">
           <p>{{ question.solution }}</p>
-          <p>Correct Answer: {{ question.answer }}</p>
+          <p>Correct answer: {{ question.answer }}</p>
         </div>
         {% endif %}
       </div>

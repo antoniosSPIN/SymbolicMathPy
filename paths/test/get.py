@@ -2,7 +2,10 @@ from flask import render_template, abort
 
 from models import Problem
 from paths.test import test
-from paths.test.utils import get_test_info, get_all_test_info, get_problem_and_questions
+from paths.test.utils import (
+    get_test_info, get_all_test_info, get_problem_and_questions,
+    get_problem_history
+)
 from errors import HTTPErrors
 
 
@@ -67,12 +70,15 @@ def get_test_problem(test_id, problem_id):
         Parameters:
             
     """
+    student_id = 2
     problem, questions = get_problem_and_questions(test_id, problem_id)
     if not problem or not questions:
         print("Problem with id {}, {} was not found".format(test_id, problem_id))
         abort(HTTPErrors.NotFoundError.value)
     next_problem = Problem.query.filter_by(test_id=test_id, problem_id=(problem_id + 1)).first()
     prev_problem = Problem.query.filter_by(test_id=test_id, problem_id=(problem_id - 1)).first()
+    problem_history = get_problem_history(student_id, test_id, problem_id)
+    print(problem_history)
     problem_obj = {
         "problem_id": problem.problem_id,
         "problem_statement": problem.problem_statement,
@@ -87,7 +93,11 @@ def get_test_problem(test_id, problem_id):
             "question": question.question,
             "difficulty": question.difficulty.value,
             "marks": question.marks,
-            "answered": False  # Default value. TODO: Must change
+            "is_answered": problem_history[i].is_answered,
+            "submitted_answer": problem_history[i].answer,
+            "is_correct": problem_history[i].is_correct,
+            "answer": question.answer,
+            "solution": question.solution,
         }
 
     return render_template("test/problem.html", problem=problem_obj)
