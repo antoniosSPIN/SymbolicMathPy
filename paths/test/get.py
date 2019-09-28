@@ -1,4 +1,4 @@
-from flask import render_template, abort
+from flask import render_template, abort, session
 
 from models import Problem
 from paths.test import test
@@ -70,7 +70,7 @@ def get_test_problem(test_id, problem_id):
         Parameters:
             
     """
-    student_id = 2
+    student_id = session['user_id']
     problem, questions = get_problem_and_questions(test_id, problem_id)
     if not problem or not questions:
         print("Problem with id {}, {} was not found".format(test_id, problem_id))

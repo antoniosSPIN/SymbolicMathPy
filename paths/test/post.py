@@ -9,7 +9,7 @@ from errors import HTTPErrors
 
 @test.route("/<int:test_id>/start", methods=["POST"])
 def start_test(test_id):
-    student_id = 2
+    student_id = session['user_id']
     has_taken_test = TestHistory.query.filter_by(student_id=student_id, test_id=test_id).all()
     if len(has_taken_test) != 0:
         print('User has already taken this test')
@@ -29,7 +29,7 @@ def start_test(test_id):
 def post_answer(test_id, problem_id):
     submitted_answer = request.form['answer']
     question_id = request.form['question_id']
-    student_id = 2
+    student_id = session['user_id']
     question_history = TestHistory.query.\
         filter_by(student_id=2, test_id=test_id, problem_id=problem_id, question_id=question_id).first()
     if question_history.is_answered:
