@@ -133,6 +133,24 @@ class Question(Base):
     __table_args__ = (db.ForeignKeyConstraint([problem_id, test_id], [Problem.problem_id, Problem.test_id]), {})
 
 
+class HasFinishedTest(Base):
+    """A class representing the finished tests of a student
+    """
+
+    def __init__(self, test_id, student_id):
+        self.student_id = student_id
+        self.test_id = test_id
+    
+    __tablename__ = 'has_finished_test'
+
+    has_finished_test_id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.ForeignKey('auth_user.auth_user_id'), nullable=False, index=True)
+    test_id = db.Column(db.ForeignKey('test.test_id'), nullable=False, index=True)
+
+    auth_user = relationship('AuthUser')
+    test = relationship('Test')
+
+
 class TestHistory(Base):
     """A class representing the test history of a student
     """
