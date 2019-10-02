@@ -25,15 +25,20 @@ def get_test_dashboard():
                 - tests.total_marks (Integer) The total marks received from the test
                 - tests.difficulty (Integer) The difficulty of the test
     """
+    student_id = session['user_id']
     tests_in_db = get_all_test_info()
     tests = [{}] * len(tests_in_db)
     for i, (test_id, name, problem_count, total_marks, difficulty) in enumerate(tests_in_db):
+        is_started = TestHistory.query.filter_by(student_id=student_id, test_id=test_id).first()
+        is_finished = HasFinishedTest.query.filter_by(student_id=student_id, test_id=test_id).first()
+        status = 'Completed' if is_finished else ('In Progress' if is_started else 'Not Started')
         test = {
             'test_id': test_id,
             'name': name,
             'problem_count': problem_count,
             'total_marks': total_marks,
-            'difficulty': difficulty
+            'difficulty': difficulty,
+            'status': status
         }
         tests[i] = test
     return render_template('test/dashboard.html', tests=tests)
