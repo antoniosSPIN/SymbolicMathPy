@@ -1,6 +1,7 @@
 from flask import render_template, abort, session
 
 from models import Problem
+from paths.authorization import login_required
 from paths.test import test
 from paths.test.utils import (
     get_test_info, get_all_test_info, get_problem_and_questions,
@@ -10,6 +11,7 @@ from errors import HTTPErrors
 
 
 @test.route("/", methods=["GET"])
+@login_required
 def get_dashboard():
     """
         Get test Dashboard
@@ -37,6 +39,7 @@ def get_dashboard():
 
 
 @test.route("/<int:test_id>", methods=["GET"])
+@login_required
 def get_test(test_id):
     """
         Get test info
@@ -60,6 +63,7 @@ def get_test(test_id):
 
 
 @test.route("/<int:test_id>/problem/<int:problem_id>", methods=["GET"])
+@login_required
 def get_test_problem(test_id, problem_id):
     """
         Get problem of test

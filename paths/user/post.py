@@ -1,9 +1,8 @@
-from flask import render_template, request, session, abort, redirect, url_for
+from flask import render_template, request, session, redirect, url_for
 
 from paths.user import user
 from paths.user.utils import create_form_get_response
 from models import AuthUser, HasUserRole, UserRole
-from errors import HTTPErrors
 from app import db
 
 

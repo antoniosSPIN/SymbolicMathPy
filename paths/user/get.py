@@ -1,6 +1,6 @@
-from flask import session, abort, render_template, url_for, redirect
+from flask import session, render_template, url_for, redirect
 
-from errors import HTTPErrors
+from paths.authorization import login_required
 from paths.user import user
 from paths.user.utils import create_form_get_response
 
@@ -16,19 +16,13 @@ def get_login_form():
 
 
 @user.route('/', methods=["GET"])
+@login_required
 def get_user_profile():
-    if 'user_id' not in session:
-        print('Unauthorised user')
-        abort(HTTPErrors.Unauthorized.value)
     return render_template('user/profile.html')
 
 
 @user.route('/logout', methods=['GET'])
+@login_required
 def logout_user():
-    if 'user_id' in session:
-        session.pop('user_id')
-    else:
-        print('Person tried to logout without logging in first')
-        abort(HTTPErrors.BadRequest.value)
-
+    session.pop('user_id')
     return redirect(url_for('user.get_login_form'), code=302)

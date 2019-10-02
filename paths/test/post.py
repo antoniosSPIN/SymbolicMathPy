@@ -2,12 +2,14 @@ from flask import request, abort, session
 from app import db
 
 from models import TestHistory, Problem, Question
+from paths.authorization import login_required
 from paths.test import test
 from paths.test.utils import get_question_asnwer, checkAnswer
 from errors import HTTPErrors
 
 
 @test.route("/<int:test_id>/start", methods=["POST"])
+@login_required
 def start_test(test_id):
     student_id = session['user_id']
     has_taken_test = TestHistory.query.filter_by(student_id=student_id, test_id=test_id).all()
@@ -26,6 +28,7 @@ def start_test(test_id):
 
 
 @test.route("/<int:test_id>/problem/<int:problem_id>", methods=["POST"])
+@login_required
 def post_answer(test_id, problem_id):
     submitted_answer = request.form['answer']
     question_id = request.form['question_id']
