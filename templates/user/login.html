@@ -1,33 +1,30 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>AstroTrain - Login</title>
-    <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  </head>
-  <body>
-    <h1> User Login </h1>
-    <form method="POST">
-      {% if error != '' %}
-        <span> {{ error }} </span>
-      {% endif %}
-      <input id="token" name="token" type="hidden" value="{{ token }}">
-      <div class="form-group">
-        <div class="input-container">
-          <label for="email-input">Email:</label>
-          <input id="email-input" name="email" type="text" required/>
-        </div>
+{% extends "base/layout.html" %}
+{% block title %} Login {% endblock %}
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+{% endblock %}
+{% block content %}
+  <h1> User Login </h1>
+  <form method="POST">
+    {% if error != '' %}
+      <span> {{ error }} </span>
+    {% endif %}
+    <input id="token" name="token" type="hidden" value="{{ token }}">
+    <div class="form-group">
+      <div class="input-container">
+        <label for="email-input">Email:</label>
+        <input id="email-input" name="email" type="text" required/>
       </div>
-      <div class="form-group">
-        <div class="input-container">
-          <label for="password-input">Password:</label>
-          <input id="password-input" name="password" type="password" required/>
-        </div>
+    </div>
+    <div class="form-group">
+      <div class="input-container">
+        <label for="password-input">Password:</label>
+        <input id="password-input" name="password" type="password" required/>
       </div>
-      <div>
-        <input type="submit" value="Register" name="Register">
-      </div>
-    </form>
-  </body>
-</html>
+    </div>
+    <div>
+      <input type="submit" value="Register" name="Register">
+    </div>
+  </form>
+{% endblock %}

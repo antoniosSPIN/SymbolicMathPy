@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>AstroTrain - Test Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  </head>
-  <body>
+{% extends "base/layout.html" %}
+{% block title %} Test Dashboard {% endblock %}
+{% block head %}
+{{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+{% endblock %}
+{% block content %}
     <h1>List of Tests</h1>
     <div class="test-container">
       <div class="test-list-header">
@@ -27,5 +25,4 @@
       </div>
     {% endfor %}
     </div>
-  </body>
-</html>
+{% endblock %}

@@ -1,51 +1,48 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>AstroTrain - Test Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
-    <script src="{{ url_for('static', filename='js/problem.js') }}"></script>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  </head>
-  <body>
-    <div class="problem-container">
-      <div class="problem-statement">
-        <h1>Problem {{ problem.test_id }}.{{ problem.problem_id }}</h1>    
-        <p>{{ problem.problem_statement }}</p>
-      </div>
-    {% for question in problem.questions %}
-      <div class="question-container" id="question-container-{{ question.question_id }}">
-        <p>
-          Question {{ problem.test_id }}.{{ problem.problem_id }}.{{ question.question_id }}. {{ question.question }}
-        </p>
-        <span class="marks">{{ question.marks }} marks</span>
-        <span class="difficulty">{{ question.difficulty }}</span>
-        {% if not question.is_answered %}
-        <form class="form-answer" id="question-form-{{ question.question_id }}" method="POST">
-          <input type="text" name="answer" id="answer-{{ question.question_id }}">
-          <input type="submit" value="Submit Answer">
-        </form>
-        {% else %}
-        <span class="{{ question.is_correct }}">Submitted answer: {{ question.submitted_answer }}</span>
-        {% endif %}
-        {% if is_finished %}
-        <div class="solution">
-          <p>{{ question.solution }}</p>
-          <p>Correct answer: {{ question.answer }}</p>
-        </div>
-        {% endif %}
-      </div>
-    {% endfor %}
-    <div class="test-navigation">
-      {% if problem.has_prev %}
-      <a href="{{ problem.problem_id - 1 }}">Previous Problem</a>
-      {% endif %}
-      {% if problem.has_next %}
-      <a href="{{ problem.problem_id + 1 }}">Next Problem</a>
+{% extends "base/layout.html" %}
+{% block title %} Registration {% endblock %}
+{% block head %}
+{{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+  <script src="{{ url_for('static', filename='js/problem.js') }}"></script>
+{% endblock %}
+{% block content %}
+  <div class="problem-container">
+    <div class="problem-statement">
+      <h1>Problem {{ problem.test_id }}.{{ problem.problem_id }}</h1>    
+      <p>{{ problem.problem_statement }}</p>
+    </div>
+  {% for question in problem.questions %}
+    <div class="question-container" id="question-container-{{ question.question_id }}">
+      <p>
+        Question {{ problem.test_id }}.{{ problem.problem_id }}.{{ question.question_id }}. {{ question.question }}
+      </p>
+      <span class="marks">{{ question.marks }} marks</span>
+      <span class="difficulty">{{ question.difficulty }}</span>
+      {% if not question.is_answered %}
+      <form class="form-answer" id="question-form-{{ question.question_id }}" method="POST">
+        <input type="text" name="answer" id="answer-{{ question.question_id }}">
+        <input type="submit" value="Submit Answer">
+      </form>
       {% else %}
-      <a href="../end">End</a>
+      <span class="{{ question.is_correct }}">Submitted answer: {{ question.submitted_answer }}</span>
+      {% endif %}
+      {% if is_finished %}
+      <div class="solution">
+        <p>{{ question.solution }}</p>
+        <p>Correct answer: {{ question.answer }}</p>
+      </div>
       {% endif %}
     </div>
-    </div>
-  </body>
-</html>
+  {% endfor %}
+  <div class="test-navigation">
+    {% if problem.has_prev %}
+    <a href="{{ problem.problem_id - 1 }}">Previous Problem</a>
+    {% endif %}
+    {% if problem.has_next %}
+    <a href="{{ problem.problem_id + 1 }}">Next Problem</a>
+    {% else %}
+    <a href="../end">End</a>
+    {% endif %}
+  </div>
+  </div>
+{% endblock %}

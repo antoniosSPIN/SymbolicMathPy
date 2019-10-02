@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>AstroTrain - Test Info</title>
-    <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
-    <script src="{{ url_for('static', filename='js/test-info.js') }}"></script>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  </head>
-  <body>
-    <h1>Test</h1>
-    <div id="start-test-button">{{ text }}</div>
-  </body>
-</html>
+{% extends "base/layout.html" %}
+{% block title %} Registration {% endblock %}
+{% block head %}
+{{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+  <script src="{{ url_for('static', filename='js/test-info.js') }}"></script>
+{% endblock %}
+{% block content %}
+  <h1>Test</h1>
+  <div id="start-test-button">{{ text }}</div>
+{% endblock %}

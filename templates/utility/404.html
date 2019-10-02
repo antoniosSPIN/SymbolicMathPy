@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>AstroTrain - Not Found Page</title>
-    <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  </head>
-  <body>
-    <h1>404 Not Found</h1>
-    <p>The url you have requested was not found</p>
-    <p>Please make sure that you typed the url correctly</p>
-  </body>
-</html>
+{% extends "base/layout.html" %}
+{% block title %} Registration {% endblock %}
+{% block head %}
+{{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+{% endblock %}
+{% block content %}
+  <h1>404 Not Found</h1>
+  <p>The url you have requested was not found</p>
+  <p>Please make sure that you typed the url correctly</p>
+{% endblock %}

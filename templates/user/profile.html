@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>AstroTrain - User Profile</title>
-    <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  </head>
-  <body>
-    <h1> User Profile </h1>
-    <a href="/test">Test</a>
-    <a href="/user/logout">Logout</div>
-  </body>
-</html>
+{% extends "base/layout.html" %}
+{% block title %} User Profile {% endblock %}
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+{% endblock %}
+{% block content %}
+  <h1> User Profile </h1>
+  <a href="/test">Test</a>
+  <a href="/user/logout">Logout</div>
+{% endblock %}
