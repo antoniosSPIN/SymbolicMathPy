@@ -15,21 +15,21 @@ def start_test(test_id):
         Start test
         Description: Start a test for user
         Returns: The id of the first problem
-        Throws: 
+        Throws:
             - BadRequest error if test has been started before
     """
     student_id = session['user_id']
     has_taken_test = TestHistory.query.filter_by(student_id=student_id, test_id=test_id).all()
     if len(has_taken_test) != 0:
-        print('User has already taken this test')
-        abort(HTTPErrors.BadRequest.value)
-    test_problems = Problem.query.filter_by(test_id=test_id).all()
-    for problem in test_problems:
-        questions = Question.query.filter_by(test_id=test_id, problem_id=problem.problem_id).all()
-        for question in questions:
-            new_test_history = TestHistory(student_id, test_id, problem.problem_id, question.question_id, None, None, False)
-            db.session.add(new_test_history)
-    db.session.commit()
+        print('User {} has already started test {}'.format(student_id, test_id))
+    else:
+        test_problems = Problem.query.filter_by(test_id=test_id).all()
+        for problem in test_problems:
+            questions = Question.query.filter_by(test_id=test_id, problem_id=problem.problem_id).all()
+            for question in questions:
+                new_test_history = TestHistory(student_id, test_id, problem.problem_id, question.question_id, None, None, False)
+                db.session.add(new_test_history)
+        db.session.commit()
     start = Problem.query.filter_by(test_id=test_id).order_by(Problem.problem_id).first()
     return {'start': start.problem_id}
 

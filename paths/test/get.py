@@ -1,7 +1,7 @@
 from flask import render_template, abort, session, redirect, url_for
 
 from app import db
-from models import Problem, HasFinishedTest
+from models import Problem, HasFinishedTest, TestHistory
 from paths.authorization import login_required
 from paths.test import test
 from paths.test.utils import (
@@ -56,11 +56,15 @@ def get_test(test_id):
         Throws:
             404 Not Found: Test id was not found in the database
     """
+    student_id = session['user_id']
     test_in_db = get_test_info(test_id)
     if not test_in_db:
         print('test with id {} not found'.format(test_id))
-        abort(HTTPErrors.NotFoundError.value, 'Test not found')
-    return render_template('test/test-info.html')
+        abort(HTTPErrors.NotFoundError.value)
+    is_started = TestHistory.query.filter_by(student_id=student_id, test_id=test_id).first()
+    is_finished = HasFinishedTest.query.filter_by(student_id=student_id, test_id=test_id).first()
+    text = 'View test' if is_finished else ('Continue test' if is_started else 'Start test')
+    return render_template('test/test-info.html', text=text)
 
 
 @test.route('/<int:test_id>/problem/<int:problem_id>', methods=['GET'])
