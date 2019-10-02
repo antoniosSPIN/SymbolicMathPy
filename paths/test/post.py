@@ -8,7 +8,7 @@ from paths.test.utils import get_question_asnwer, checkAnswer
 from errors import HTTPErrors
 
 
-@test.route("/<int:test_id>/start", methods=["POST"])
+@test.route('/<int:test_id>/start', methods=['POST'])
 @login_required
 def start_test(test_id):
     """
@@ -34,7 +34,7 @@ def start_test(test_id):
     return {'start': start.problem_id}
 
 
-@test.route("/<int:test_id>/problem/<int:problem_id>", methods=["POST"])
+@test.route('/<int:test_id>/problem/<int:problem_id>', methods=['POST'])
 @login_required
 def post_answer(test_id, problem_id):
     """
@@ -59,9 +59,4 @@ def post_answer(test_id, problem_id):
         filter_by(student_id=student_id, test_id=test_id, problem_id=problem_id, question_id=question_id).\
         update({'answer': submitted_answer, 'is_correct': is_equal, 'is_answered': True})
     db.session.commit()
-    return {
-        'submitted_answer': submitted_answer,
-        'answer': answer,
-        'solution': solution,
-        'is_correct': is_equal
-    }
+    return {}, 200

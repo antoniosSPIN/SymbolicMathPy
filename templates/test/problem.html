@@ -26,6 +26,9 @@
           <input type="submit" value="Submit Answer">
         </form>
         {% else %}
+        <span class="{{ question.is_correct }}">Submitted answer: {{ question.submitted_answer }}</span>
+        {% endif %}
+        {% if is_finished %}
         <div class="solution">
           <p>{{ question.solution }}</p>
           <p>Correct answer: {{ question.answer }}</p>

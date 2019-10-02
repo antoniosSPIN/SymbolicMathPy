@@ -5,7 +5,7 @@ from paths.user import user
 from paths.user.utils import create_form_get_response
 
 
-@user.route('/registration', methods=["GET"])
+@user.route('/registration', methods=['GET'])
 def get_registration_form():
     """
         Get registration form
@@ -14,7 +14,7 @@ def get_registration_form():
     return create_form_get_response(template="user/registration.html", path='/user/registration', error="")
 
 
-@user.route('/login', methods=["GET"])
+@user.route('/login', methods=['GET'])
 def get_login_form():
     """
         Get login form
@@ -23,7 +23,7 @@ def get_login_form():
     return create_form_get_response(template="user/login.html", path='/user/login', error="")
 
 
-@user.route('/', methods=["GET"])
+@user.route('/', methods=['GET'])
 @login_required
 def get_user_profile():
     """
