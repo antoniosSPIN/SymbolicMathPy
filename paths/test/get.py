@@ -78,13 +78,15 @@ def get_test_problem(test_id, problem_id):
     student_id = session['user_id']
     problem, questions = get_problem_and_questions(test_id, problem_id)
     is_finished = not not (HasFinishedTest.query.filter_by(student_id=student_id, test_id=test_id).first())
-    print(not not is_finished)
     if not problem or not questions:
         print('Problem with id {}, {} was not found'.format(test_id, problem_id))
         abort(HTTPErrors.NotFoundError.value)
     next_problem = Problem.query.filter_by(test_id=test_id, problem_id=(problem_id + 1)).first()
     prev_problem = Problem.query.filter_by(test_id=test_id, problem_id=(problem_id - 1)).first()
     problem_history = get_problem_history(student_id, test_id, problem_id)
+    if len(problem_history) == 0:
+        print('Student {} has not started test {}'.format(student_id, test_id))
+        return redirect(url_for('test.get_test', test_id=test_id))
     problem_obj = {
         'problem_id': problem.problem_id,
         'problem_statement': problem.problem_statement,
