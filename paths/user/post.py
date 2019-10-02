@@ -8,6 +8,12 @@ from app import db
 
 @user.route('/registration', methods=["POST"])
 def register_user():
+    """
+        Register user
+        Renders: user/registration-successful.html
+        Throws:
+            - Malformed request error form.token is not the same as cookies.token
+    """
     error = ''
     if request.form['token'] != request.cookies.get('token'):
         error = 'Malformed Request. Please try again!'
@@ -23,6 +29,14 @@ def register_user():
 
 @user.route('/login', methods=["POST"])
 def login_user():
+    """
+        Register user
+        Renders: user/registration-successful.html
+        Throws:
+            - Malformed request error form.token is not the same as cookies.token
+            - Authentication error email & password does not match up to any user in database
+        Redirects: user.get_user_profile, 302
+    """
     error = ''
     if request.form['token'] != request.cookies.get('token'):
         error = 'Malformed Request. Please try again!'
@@ -34,4 +48,4 @@ def login_user():
         return create_form_get_response(template="user/login.html", path='/user/login', error=error)
     
     session['user_id'] = user.auth_user_id
-    return redirect(url_for('user.get_user_profile'), code=302)
+    return redirect(url_for('user.get_user_profile'))

@@ -11,11 +11,18 @@ from errors import HTTPErrors
 @test.route("/<int:test_id>/start", methods=["POST"])
 @login_required
 def start_test(test_id):
+    """
+        Start test
+        Description: Start a test for user
+        Returns: The id of the first problem
+        Throws: 
+            - BadRequest error if test has been started before
+    """
     student_id = session['user_id']
     has_taken_test = TestHistory.query.filter_by(student_id=student_id, test_id=test_id).all()
     if len(has_taken_test) != 0:
         print('User has already taken this test')
-        abort(400)
+        abort(HTTPErrors.BadRequest.value)
     test_problems = Problem.query.filter_by(test_id=test_id).all()
     for problem in test_problems:
         questions = Question.query.filter_by(test_id=test_id, problem_id=problem.problem_id).all()
@@ -30,6 +37,14 @@ def start_test(test_id):
 @test.route("/<int:test_id>/problem/<int:problem_id>", methods=["POST"])
 @login_required
 def post_answer(test_id, problem_id):
+    """
+        Post test answer
+        Returns:
+            - submitted_answer {String}: The answer submitted
+            - answer {String}: The correct answer
+            - solution {String}: The steps to get the correct answer
+            - is_correct {Boolean}: Flag to show if submitted_answer was correct or not
+    """
     submitted_answer = request.form['answer']
     question_id = request.form['question_id']
     student_id = session['user_id']

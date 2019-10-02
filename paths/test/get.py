@@ -1,6 +1,7 @@
-from flask import render_template, abort, session
+from flask import render_template, abort, session, redirect, url_for
 
-from models import Problem
+from app import db
+from models import Problem, HasFinishedTest
 from paths.authorization import login_required
 from paths.test import test
 from paths.test.utils import (
@@ -12,7 +13,7 @@ from errors import HTTPErrors
 
 @test.route("/", methods=["GET"])
 @login_required
-def get_dashboard():
+def get_test_dashboard():
     """
         Get test Dashboard
         Renders: test/dashboard.html
@@ -105,3 +106,24 @@ def get_test_problem(test_id, problem_id):
         }
 
     return render_template("test/problem.html", problem=problem_obj)
+
+
+@test.route("/<int:test_id>/end", methods=["GET"])
+@login_required
+def finish_test(test_id):
+    """
+        Finish Test
+        Description: Finished a test and calculate results
+        Renders: test/end.html
+        Throws:
+            - BadRequest error if test has already been finished
+    """
+    student_id = session['user_id']
+    is_finished = HasFinishedTest.query.filter_by(test_id=test_id, student_id=student_id).first()
+    if is_finished:
+        print('Student with id {} has already finished test {}'.format(student_id, test_id))
+        abort(HTTPErrors.BadRequest.value)
+    test_finished = HasFinishedTest(test_id, student_id)
+    db.session.add(test_finished)
+    db.session.commit()
+    return redirect(url_for('test.get_test_dashboard'))
