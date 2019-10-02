@@ -14,6 +14,7 @@
         <span>Total number of problems</span>
         <span>Total Marks</span>
         <span>Difficulty</span>
+        <span>Status</span>
       </div>
     {% for test in tests %}
       <div class="entry-container">
@@ -21,7 +22,8 @@
         <span>{{ test.problem_count }}</span>
         <span>{{ test.total_marks }}</span>
         <span>{{ test.difficulty }}</span>
-        <a href="/test/{{ test.test_id }}">Take Test</a>
+        <a href="/test/{{ test.test_id }}">View Test</a>
+        <span>{{ test.status }}</span>
       </div>
     {% endfor %}
     </div>
