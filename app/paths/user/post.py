@@ -1,7 +1,10 @@
-from flask import render_template, request, session, redirect, url_for
+import random
+from flask import request, session, redirect, url_for, render_template, g
 
+from app.paths.authorization import validate_payload
 from app.paths.user import user
-from app.paths.user.utils import create_form_get_response
+from app.paths.user.utils import hasErrors
+from app.paths.user.schemas import LoginSchema
 from app.models import AuthUser, HasUserRole, UserRole
 from app import db, bcrypt
 
@@ -15,13 +18,17 @@ def register_user():
             - Malformed request error form.token is not the same as cookies.token
     """
     error = ''
-    if request.form['token'] != request.cookies.get('token'):
+    if request.form['token'] != session['token']:
         error = 'Malformed Request. Please try again!'
-        return create_form_get_response(template='user/registration.html', path='/user/registration', error=error)
     user = AuthUser.query.filter_by(email=request.form['email']).first()
-    if user:
+    if not error and user:
         error = 'Email already exists'
-        return create_form_get_response(template='user/registration.html', path='/user/registration', error=error)
+    
+    if error:
+        token = str(random.getrandbits(128))
+        session['token'] = token
+        return render_template('user/registration.html', error=error)
+    session.pop('token')
     pw_hash = bcrypt.generate_password_hash(request.form['password'])
     new_user = AuthUser(request.form['first_name'], request.form['last_name'], request.form['email'], pw_hash)
     db.session.add(new_user)
@@ -33,6 +40,7 @@ def register_user():
 
 
 @user.route('/login', methods=['POST'])
+@validate_payload(schema=LoginSchema())
 def login_user():
     """
         Register user
@@ -42,18 +50,27 @@ def login_user():
             - Authentication error email & password does not match up to any user in database
         Redirects: user.get_user_profile, 302
     """
-    error = ''
-    if request.form['token'] != request.cookies.get('token'):
-        error = 'Malformed Request. Please try again!'
+    error = {
+        'token': [],
+        'email': [],
+        'password': []
+    }
+    if g.errors:
+        for field in g.errors:
+            error[field].append(g.errors[field])
+    if 'token' not in request.form or request.form['token'] != session['token']:
+        error['token'].append('Malformed Request. Please try again!')
     user = AuthUser.query.filter_by(email=request.form['email']).first()
     if error == '' and not user:
-        error = 'The user does not exist'
+        error['user'].append('The user does not exist')
     
     if user and not bcrypt.check_password_hash(user.password, request.form['password']):
-        error = 'Password is incorrect'
+        error['password'].append('Password is incorrect')
 
-    if error != '':
-        return create_form_get_response(template="user/login.html", path='/user/login', error=error)
-    
+    if hasErrors(error):
+        token = str(random.getrandbits(128))
+        session['token'] = token
+        return render_template('user/login.html', error=error)
+    session.pop('token')
     session['user_id'] = user.auth_user_id
     return redirect(url_for('user.get_user_profile'))

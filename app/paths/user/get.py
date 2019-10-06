@@ -1,8 +1,8 @@
+import random
 from flask import session, render_template, url_for, redirect
 
 from app.paths.authorization import login_required
 from app.paths.user import user
-from app.paths.user.utils import create_form_get_response
 
 
 @user.route('/registration', methods=['GET'])
@@ -11,7 +11,9 @@ def get_registration_form():
         Get registration form
         Renders: user/registration.html
     """
-    return create_form_get_response(template="user/registration.html", path='/user/registration', error="")
+    token = str(random.getrandbits(128))
+    session['token'] = token
+    return render_template('user/registration.html', token=token, error="")
 
 
 @user.route('/login', methods=['GET'])
@@ -20,7 +22,9 @@ def get_login_form():
         Get login form
         Renders: user/login.html
     """
-    return create_form_get_response(template="user/login.html", path='/user/login', error="")
+    token = str(random.getrandbits(128))
+    session['token'] = token
+    return render_template('user/login.html', token=token, error="")
 
 
 @user.route('/', methods=['GET'])
