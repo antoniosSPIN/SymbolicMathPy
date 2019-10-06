@@ -1,8 +1,8 @@
 from flask import session, render_template, url_for, redirect
 
-from paths.authorization import login_required
-from paths.user import user
-from paths.user.utils import create_form_get_response
+from app.paths.authorization import login_required
+from app.paths.user import user
+from app.paths.user.utils import create_form_get_response
 
 
 @user.route('/registration', methods=['GET'])

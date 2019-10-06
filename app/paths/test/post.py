@@ -1,11 +1,11 @@
 from flask import request, abort, session
 from app import db
 
-from models import TestHistory, Problem, Question
-from paths.authorization import login_required
-from paths.test import test
-from paths.test.utils import get_question_asnwer, checkAnswer
-from errors import HTTPErrors
+from app.models import TestHistory, Problem, Question
+from app.paths.authorization import login_required
+from app.paths.test import test
+from app.paths.test.utils import get_question_asnwer, checkAnswer
+from app.errors import HTTPErrors
 
 
 @test.route('/<int:test_id>/start', methods=['POST'])

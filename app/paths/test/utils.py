@@ -1,6 +1,6 @@
 from sqlalchemy import func, and_
 
-from models import Test, Problem, Question, TestHistory
+from app.models import Test, Problem, Question, TestHistory
 import sympy as sp
 
 

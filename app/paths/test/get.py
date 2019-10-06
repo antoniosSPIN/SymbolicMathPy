@@ -1,14 +1,14 @@
 from flask import render_template, abort, session, redirect, url_for
 
 from app import db
-from models import Problem, HasFinishedTest, TestHistory
-from paths.authorization import login_required
-from paths.test import test
-from paths.test.utils import (
+from app.models import Problem, HasFinishedTest, TestHistory
+from app.paths.authorization import login_required
+from app.paths.test import test
+from app.paths.test.utils import (
     get_test_info, get_all_test_info, get_problem_and_questions,
     get_problem_history
 )
-from errors import HTTPErrors
+from app.errors import HTTPErrors
 
 
 @test.route('/', methods=['GET'])

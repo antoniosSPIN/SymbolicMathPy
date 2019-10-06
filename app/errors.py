@@ -3,6 +3,7 @@ from flask import render_template
 
 from app import app
 
+
 class HTTPErrors(enum.Enum):
     BadRequest = 400
     Unauthorized = 401
