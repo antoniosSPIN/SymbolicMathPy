@@ -1,7 +1,8 @@
 from flask import render_template, abort, session, redirect, url_for
+from sqlalchemy import func
 
 from app import db
-from app.models import Problem, HasFinishedTest, TestHistory
+from app.models import Question, Problem, Test, HasFinishedTest, TestHistory
 from app.paths.authorization import login_required
 from app.paths.test import test
 from app.paths.test.utils import (
@@ -120,7 +121,7 @@ def get_test_problem(test_id, problem_id):
     return render_template('test/problem.html', problem=problem_obj, is_finished=is_finished)
 
 
-@test.route("/<int:test_id>/end", methods=["GET"])
+@test.route('/<int:test_id>/end', methods=['GET'])
 @login_required
 def finish_test(test_id):
     """
@@ -132,10 +133,42 @@ def finish_test(test_id):
     """
     student_id = session['user_id']
     is_finished = HasFinishedTest.query.filter_by(test_id=test_id, student_id=student_id).first()
-    if is_finished:
-        print('Student with id {} has already finished test {}'.format(student_id, test_id))
-        abort(HTTPErrors.BadRequest.value)
-    test_finished = HasFinishedTest(test_id, student_id)
-    db.session.add(test_finished)
-    db.session.commit()
-    return redirect(url_for('test.get_test_dashboard'))
+    if not is_finished:
+        print('Student with id {} has finished test {}'.format(student_id, test_id))
+        test_finished = HasFinishedTest(test_id, student_id)
+        db.session.add(test_finished)
+        db.session.commit()
+
+    test_results = {}
+    problems = Problem.query.filter_by(test_id=test_id).all()
+    test_results['problems'] = [{}] * len(problems)
+    test_results['total_marks'] = test_results['gained_marks'] = 0
+    test_results['total_questions'] = test_results['correct_answers'] = 0
+    for i, problem in enumerate(problems):
+        questions = TestHistory.query.filter_by(test_id=test_id, problem_id=problem.problem_id).\
+            join(Question).with_entities(
+                Question.marks.label('marks'),
+                TestHistory.is_correct.label('is_correct'),
+                Question.question_id.label('question_id')).all()
+        total_marks = gained_marks = correct = 0
+        for question in questions:
+            total_marks += question.marks
+            gained_marks += question.marks * question.is_correct
+            correct += question.is_correct
+        test_results['problems'][i] = {
+            'problem_id': problem.problem_id,
+            'total_marks': total_marks,
+            'gained_marks': gained_marks,
+            'status_class': 'correct' if total_marks == gained_marks else 'incorrect',
+            'questions': [{
+                'question_id': question.question_id,
+                'marks': question.marks,
+                'status_class': 'correct' if question.is_correct else 'incorrect'
+            } for question in questions]
+        }
+        test_results['total_marks'] += total_marks
+        test_results['gained_marks'] += gained_marks
+        test_results['total_questions'] += len(questions)
+        test_results['correct_answers'] += correct
+        
+    return render_template('test/end.html', test=test_results)

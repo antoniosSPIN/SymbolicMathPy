@@ -1,0 +1,33 @@
+{% extends "base/layout.html" %}
+{% block title %} Test Results {% endblock %}
+{% block head %}
+{{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static',    filename='css/user.css') }}">
+{% endblock %}
+{% block content %}
+    <h1>Test Results</h1>
+    <div class="summary-container">
+        <div class=row>
+            <span>Total correct answers</span>
+            <span>{{ test.correct_answers }}/{{ test.total_questions }}</span>
+        </div>
+        <div class=row>
+            <span>Total marks</span>
+            <span>{{ test.gained_marks }}/{{ test.total_marks }}</span>
+        </div>
+    </div>
+    <div class="details-container retracted">
+    {% for problem in test.problems %}
+        <div class="problem-container {{problem.status_class}}">
+            <a href="problem/{{problem.problem_id}}">Problem {{ problem.problem_id }}</a>
+            {% for question in problem.questions %}
+            <div class="question-container {{question.status_class}}">
+                <span>Question {{ problem.problem_id }}.{{question.question_id}}</span>
+                <span>{{ question.marks }} marks</span>
+            </div>
+            {% endfor %}
+            <span>Total marks: {{ problem.gained_marks }}/{{ problem.total_marks }}</span>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

@@ -38,9 +38,12 @@
     {% if problem.has_prev %}
     <a href="{{ problem.problem_id - 1 }}">Previous Problem</a>
     {% endif %}
+    {% if is_finished %}
+    <a href="../end">View Results</a>
+    {% endif %}
     {% if problem.has_next %}
     <a href="{{ problem.problem_id + 1 }}">Next Problem</a>
-    {% else %}
+    {% elif not problem.has_next and not is_finished %}
     <a href="../end">End</a>
     {% endif %}
   </div>

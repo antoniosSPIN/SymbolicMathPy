@@ -39,17 +39,15 @@ def start_test(test_id):
 def post_answer(test_id, problem_id):
     """
         Post test answer
-        Returns:
-            - submitted_answer {String}: The answer submitted
-            - answer {String}: The correct answer
-            - solution {String}: The steps to get the correct answer
-            - is_correct {Boolean}: Flag to show if submitted_answer was correct or not
+        Returns: 200 OK
+        Throws: 
+            - BadRequest error if answer has already been sumbitted
     """
     submitted_answer = request.form['answer']
     question_id = request.form['question_id']
     student_id = session['user_id']
     question_history = TestHistory.query.\
-        filter_by(student_id=2, test_id=test_id, problem_id=problem_id, question_id=question_id).first()
+        filter_by(student_id=student_id, test_id=test_id, problem_id=problem_id, question_id=question_id).first()
     if question_history.is_answered:
         print('Student {} tried to re-submit answer'.format(student_id))
         abort(HTTPErrors.BadRequest.value)
