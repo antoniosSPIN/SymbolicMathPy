@@ -27,7 +27,7 @@ def register_user():
     if error:
         token = str(random.getrandbits(128))
         session['token'] = token
-        return render_template('user/registration.html', error=error)
+        return render_template('user/registration.html', token=token, error=error)
     session.pop('token')
     pw_hash = bcrypt.generate_password_hash(request.form['password'])
     new_user = AuthUser(request.form['first_name'], request.form['last_name'], request.form['email'], pw_hash)
@@ -50,27 +50,31 @@ def login_user():
             - Authentication error email & password does not match up to any user in database
         Redirects: user.get_user_profile, 302
     """
-    error = {
-        'token': [],
-        'email': [],
-        'password': []
-    }
+    error = {}
     if g.errors:
         for field in g.errors:
-            error[field].append(g.errors[field])
+            error[field] = g.errors[field]
+
     if 'token' not in request.form or request.form['token'] != session['token']:
+        if 'token' not in error:
+            error['token'] = []
         error['token'].append('Malformed Request. Please try again!')
     user = AuthUser.query.filter_by(email=request.form['email']).first()
+
     if error == '' and not user:
+        if 'user' not in error:
+            error['user'] = []
         error['user'].append('The user does not exist')
     
     if user and not bcrypt.check_password_hash(user.password, request.form['password']):
+        if 'password' not in error:
+            error['password'] = []
         error['password'].append('Password is incorrect')
-
+    del error['submit']
     if hasErrors(error):
         token = str(random.getrandbits(128))
         session['token'] = token
-        return render_template('user/login.html', error=error)
+        return render_template('user/login.html', token=token, error=error)
     session.pop('token')
     session['user_id'] = user.auth_user_id
     return redirect(url_for('user.get_user_profile'))
