@@ -50,27 +50,27 @@ def login_user():
             - Authentication error email & password does not match up to any user in database
         Redirects: user.get_user_profile, 302
     """
-    error = {}
+    error = {
+        'token': [],
+        'user': []
+    }
     if g.errors:
         for field in g.errors:
             error[field] = g.errors[field]
 
-    if 'token' not in request.form or request.form['token'] != session['token']:
-        if 'token' not in error:
-            error['token'] = []
-        error['token'].append('Malformed Request. Please try again!')
+    if not g.errors and ('token' not in request.form or request.form['token'] != session['token']):
+        print('Auth token is incorrect or missing.')
+        error['token'].append('Something went wrong. Please try again!')
     user = AuthUser.query.filter_by(email=request.form['email']).first()
 
-    if error == '' and not user:
-        if 'user' not in error:
-            error['user'] = []
-        error['user'].append('The user does not exist')
+    if not g.errors and not user:
+        print('User {} does not exist.'.format(request.form['email']))
+        error['user'].append('Wrong credentials.')
     
     if user and not bcrypt.check_password_hash(user.password, request.form['password']):
-        if 'password' not in error:
-            error['password'] = []
-        error['password'].append('Password is incorrect')
-    del error['submit']
+        print('User {} sumbitted a wrong password'.format(request.form['email']))
+        error['user'].append('Wrong credentials.')
+
     if hasErrors(error):
         token = str(random.getrandbits(128))
         session['token'] = token
