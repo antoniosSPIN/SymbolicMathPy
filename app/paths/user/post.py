@@ -15,7 +15,7 @@ def register_user():
         Register user
         Renders: user/registration-successful.html
         Throws:
-            - Malformed request error form.token is not the same as cookies.token
+            - Malformed request error form.token is not the same as session.token
     """
     error = ''
     if request.form['token'] != session['token']:
@@ -23,14 +23,18 @@ def register_user():
     user = AuthUser.query.filter_by(email=request.form['email']).first()
     if not error and user:
         error = 'Email already exists'
-    
+
     if error:
         token = str(random.getrandbits(128))
         session['token'] = token
         return render_template('user/registration.html', token=token, error=error)
     session.pop('token')
     pw_hash = bcrypt.generate_password_hash(request.form['password'])
-    new_user = AuthUser(request.form['first_name'], request.form['last_name'], request.form['email'], pw_hash)
+    new_user = AuthUser(
+        request.form['first_name'],
+        request.form['last_name'],
+        request.form['email'],
+        pw_hash)
     db.session.add(new_user)
     student_role = UserRole.query.filter_by(name='STUDENT').first()
     new_has_user_role = HasUserRole(new_user.auth_user_id, student_role.user_role_id)
@@ -66,7 +70,7 @@ def login_user():
     if not g.errors and not user:
         print('User {} does not exist.'.format(request.form['email']))
         error['user'].append('Wrong credentials.')
-    
+
     if user and not bcrypt.check_password_hash(user.password, request.form['password']):
         print('User {} sumbitted a wrong password'.format(request.form['email']))
         error['user'].append('Wrong credentials.')
